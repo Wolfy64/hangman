@@ -1,28 +1,31 @@
-.App {
-  text-align: center;
+.hangman {
+  display: flex;
+  flex-wrap: wrap;
+  width: 300px;
+  margin: auto;
+  user-select: none;
+  border: 1px solid black;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.hangman > .guesses {
+  width: 100%;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.hangman > .guessword {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.App-title {
-  font-size: 1.5em;
+.guessword > .guessletter {
+  height: 30px;
+  width: 30px;
+  border: 1px solid red;
 }
 
-.App-intro {
-  font-size: large;
+.hangman > .keyboard{
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
