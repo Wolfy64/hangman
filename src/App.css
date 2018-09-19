@@ -1,31 +1,52 @@
+h1 {
+  text-align: center;
+}
+
+button {
+  margin: 10px;
+  height: 30px;
+  width: 100px;
+  border-radius: 3px;
+  background: lightgreen;
+  font-size: medium;
+  border-color: lightgreen;
+}
+
 .hangman {
-  display: flex;
-  flex-wrap: wrap;
-  width: 300px;
-  margin: auto;
-  user-select: none;
   border: 1px solid black;
+  background-color: aliceblue;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  width: 600px;
+  margin: auto;
 }
 
 .hangman > .guesses {
-  width: 100%;
+  padding: 15px;
 }
 
-.hangman > .guessword {
-  width: 100%;
+.hangman > .guessWord {
+  font-size: 1.2em;
+  letter-spacing: 5px;
+  padding: 15px;
+}
+
+.hangman > .keyboard {
   display: flex;
+  width: 442px;
   flex-wrap: wrap;
+  margin: auto;
+  padding: 15px;
 }
 
-.guessword > .guessletter {
-  height: 30px;
-  width: 30px;
-  border: 1px solid red;
+.keyboard > .letter {
+  border: 1px solid rgb(0, 0, 0);
+  width: 32px;
+  height: 32px;
+  font-size: 1.8em;
 }
 
-.hangman > .keyboard{
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
+.keyboard > .cover {
+  opacity: 0.1;
 }
-

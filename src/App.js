@@ -1,96 +1,134 @@
-import React, { Component } from "react";
-import "./App.css";
-import propTypes from "prop-types";
-import shuffle from "lodash.shuffle";
+import React, { Component } from 'react';
+import './App.css';
+import propTypes from 'prop-types';
+import shuffle from 'lodash.shuffle';
 
-const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const PHRASE = [
-  "BONJOUR",
-  "SOLEIL",
-  "BONHEUR",
-  "SATURNE",
-  "TABLE",
-  "SUPER",
-  "OCEAN",
-  "Si debugger, c’est supprimer des bugs, alors programmer ne peut être que les ajouter "
+// Constant
+const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const WORD_LIST = [
+  'BONJOUR',
+  'SOLEIL',
+  'BONHEUR',
+  'SATURNE',
+  'TABLE',
+  'SUPER',
+  'OCEAN'
 ];
 
-const GuessCount = ({ guesses }) => <div className="guesses">{guesses}</div>;
-const GuessPhrase = ({ phrase }) => (
-  <div className="guessphrase">
-    <span className="phrase">
-      {phrase}
-    </span>
+// Stateless components
+const GuessCount = props => (
+  <div className="guesses">Nombre de tentative restant: {props.guesses}</div>
+);
+const GuessWord = props => (
+  <div className="guessWord">
+    <span className="wordToGuess">{props.hiddenWord}</span>
   </div>
 );
-const Keyboard = ({ letter, onClick }) => (
-  <div className="letter" letter={letter} onClick={() => onClick(letter)}>
-    {letter}
+const Letter = props => (
+  <div
+    className={`letter${props.cover ? ' cover' : ''}`}
+    feedback={this.getFeedbackForLetter}
+    onClick={() => props.clicked()}
+  >
+    {props.letter}
   </div>
 );
-const won = true;
-const usedLetters = new Set([]);
-
-// ### propTypes ###
-
-GuessCount.propTypes = {
-  guesses: propTypes.number.isRequired
-};
-
-GuessPhrase.propTypes = {
-  phrase: propTypes.string.isRequired,
-}
-
-Keyboard.propTypes = {
-  letter: propTypes.string.isRequired,
-  onClick: propTypes.func.isRequired
-};
+const Keyboard = props => <div className="keyboard">{props.letters}</div>;
+const Result = props => (
+  <div>
+    <h2>{props.success ? '🎉🎉 Victoire ! 🎉🎉' : '☠️☠️ Perdu ! ☠️ ☠️'}</h2>
+    <button onClick={() => props.clicked()}>Rejouer</button>
+  </div>
+);
 
 class App extends Component {
   state = {
-    keyboard: ALPHABET.split(""),
-    phrase: shuffle(PHRASE).pop().toUpperCase(),
+    attempt: 0,
+    lettersSet: new Set(),
+    wordToGuess: ''
   };
 
-  handleLetterClick(letter) {
-    usedLetters.add(letter)
-    console.log(usedLetters);    
+  componentDidMount() {
+    this.newGame();
   }
 
-  // Raffraichir le masque pour afficher les lettres trouvé !!
-  computeDisplay(phrase, letter) {
-    console.log(phrase);
-    return phrase.replace(/\w/g,
-      (letter) => (usedLetters.has(letter) ? letter : '_')
-    )
+  newGame = () => {
+    this.setState({
+      attempt: 7,
+      wordToGuess: this.randomWord(),
+      lettersSet: new Set()
+    });
+  };
+
+  randomWord() {
+    return shuffle(WORD_LIST)
+      .pop()
+      .toUpperCase();
+  }
+
+  handleLetter(letter) {
+    let { attempt, lettersSet, wordToGuess } = this.state;
+    const isNotClicked = !lettersSet.has(letter);
+    const isNotMatchWord = !wordToGuess.split('').includes(letter);
+
+    if (isNotMatchWord && isNotClicked) attempt--;
+
+    this.setState({
+      lettersSet: lettersSet.add(letter),
+      attempt
+    });
+  }
+
+  handleResult() {
+    const { attempt, wordToGuess } = this.state;
+    if (attempt === 0) return <Result clicked={this.newGame} />;
+    if (this.handleHiddenWord() === wordToGuess)
+      return <Result success clicked={this.newGame} />;
+  }
+
+  handleHiddenWord() {
+    const { lettersSet, wordToGuess } = this.state;
+    return wordToGuess.replace(
+      /\w/g,
+      letter => (lettersSet.has(letter) ? letter : '_')
+    );
   }
 
   render() {
-    const { keyboard, phrase } = this.state;
+    const letters = ALPHABET.map((letter, index) => (
+      <Letter
+        key={index}
+        letter={letter}
+        cover={this.state.lettersSet.has(letter)}
+        clicked={() => this.handleLetter(letter)}
+      />
+    ));
+
     return (
       <div className="hangman">
-        <GuessCount guesses={0} />
-
-        <div className="guessphrase">
-          <GuessPhrase
-            phrase={this.computeDisplay(phrase, usedLetters)}
-          />
-        </div>
-
-        <div className="keyboard">
-          {keyboard.map((letter, index) => (
-            <Keyboard
-              letter={letter}
-              onClick={this.handleLetterClick}
-              key={index}
-            />
-          ))}
-        </div>
-
-        {won && <p>GAGNÉ !</p>}
+        <GuessCount guesses={this.state.attempt} />
+        <GuessWord hiddenWord={this.handleHiddenWord()} />
+        {this.handleResult() || <Keyboard letters={letters} />}
       </div>
     );
   }
 }
 
 export default App;
+
+// PropTypes
+GuessCount.propTypes = {
+  guesses: propTypes.number.isRequired
+};
+
+GuessWord.propTypes = {
+  hiddenWord: propTypes.string.isRequired
+};
+
+Letter.propTypes = {
+  cover: propTypes.bool.isRequired
+};
+
+Keyboard.propTypes = {
+  letters: propTypes.array.isRequired
+};
