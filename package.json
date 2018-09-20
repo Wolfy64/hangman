@@ -5,9 +5,9 @@
   "dependencies": {
     "lodash.shuffle": "^4.2.0",
     "prop-types": "^15.6.2",
-    "react": "^16.5.1",
-    "react-dom": "^16.5.1",
-    "react-scripts": "1.1.4"
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "react-scripts": "^1.1.5"
   },
   "scripts": {
     "start": "react-scripts start",

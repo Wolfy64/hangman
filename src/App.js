@@ -1,7 +1,13 @@
-import React, { Component } from 'react';
-import './App.css';
+import React from 'react';
 import propTypes from 'prop-types';
 import shuffle from 'lodash.shuffle';
+import './App.css';
+
+import GuessCount from './components/GuessCount/GuessCount';
+import GuessWord from './components/GuessWord/GuessWord';
+import Letter from './components/Letter/Letter';
+import Keyboard from './components/Keyboard/Keyboard';
+import Result from './components/Result/Result';
 
 // Constant
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -15,33 +21,7 @@ const WORD_LIST = [
   'OCEAN'
 ];
 
-// Stateless components
-const GuessCount = props => (
-  <div className="guesses">Nombre de tentative restant: {props.guesses}</div>
-);
-const GuessWord = props => (
-  <div className="guessWord">
-    <span className="wordToGuess">{props.hiddenWord}</span>
-  </div>
-);
-const Letter = props => (
-  <div
-    className={`letter${props.cover ? ' cover' : ''}`}
-    feedback={this.getFeedbackForLetter}
-    onClick={() => props.clicked()}
-  >
-    {props.letter}
-  </div>
-);
-const Keyboard = props => <div className="keyboard">{props.letters}</div>;
-const Result = props => (
-  <div>
-    <h2>{props.success ? '🎉🎉 Victoire ! 🎉🎉' : '☠️☠️ Perdu ! ☠️ ☠️'}</h2>
-    <button onClick={() => props.clicked()}>Rejouer</button>
-  </div>
-);
-
-class App extends Component {
+class App extends React.Component {
   state = {
     attempt: 0,
     lettersSet: new Set(),
@@ -95,18 +75,19 @@ class App extends Component {
   }
 
   render() {
+    const { attempt, lettersSet } = this.state;
     const letters = ALPHABET.map((letter, index) => (
       <Letter
         key={index}
         letter={letter}
-        cover={this.state.lettersSet.has(letter)}
+        cover={lettersSet.has(letter)}
         clicked={() => this.handleLetter(letter)}
       />
     ));
 
     return (
       <div className="hangman">
-        <GuessCount guesses={this.state.attempt} />
+        <GuessCount guesses={attempt} />
         <GuessWord hiddenWord={this.handleHiddenWord()} />
         {this.handleResult() || <Keyboard letters={letters} />}
       </div>
