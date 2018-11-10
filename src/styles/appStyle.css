@@ -20,7 +20,8 @@ body {
 }
 
 h1 {
-  font-size: 2em;
+  font-size: 3em;
+  text-align: center;
   text-shadow: 2px 2px 3px #00000030;
   color: lightcyan;
   font-weight: 900;
@@ -32,7 +33,6 @@ button {
   width: 100px;
   border-radius: 3px;
   background: lightgreen;
-  /* font-size: medium; */
   border-color: lightgreen;
 }
 
@@ -63,7 +63,7 @@ button {
 
 .keyboard > .letter {
   display: flex;
-  background-color: white;
+  background-color: lightcyan;
   justify-content: center;
   align-items: center;
   border-radius: 3px;
@@ -78,4 +78,27 @@ button {
   opacity: 0.5;
   box-shadow: none;
   transform: scale(0.95);
+}
+
+.guesses {
+  width: 100%;
+  justify-content: space-around;
+  max-width: 800px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fill, 90px);
+}
+
+.guesses > span {
+  text-align: center;
+  font-size: 5em;
+  opacity: 0.2;
+  transform: rotateY(-180deg);
+  transition: all ease-in-out 600ms;
+}
+
+.guesses > .active {
+  opacity: 1;
+  transform: rotateY(0deg);
+  transition: all ease-in-out 600ms;
 }
