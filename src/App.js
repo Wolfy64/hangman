@@ -69,7 +69,7 @@ class App extends React.Component {
   handleHiddenWord() {
     const { lettersSet, wordToGuess } = this.state;
     return wordToGuess.replace(/\w/g, letter =>
-      lettersSet.has(letter) ? letter : '_'
+      lettersSet.has(letter) ? letter : ' '
     );
   }
 

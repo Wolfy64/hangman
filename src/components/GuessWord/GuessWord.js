@@ -1,8 +1,12 @@
 import React from 'react';
 
-const GuessWord = props => (
-  <div className="guessWord">
-    <span className="wordToGuess">{props.hiddenWord}</span>
+const GuessWord = ({ hiddenWord }) => (
+  <div className="wordToGuess">
+    {hiddenWord.split('').map((el, index) => (
+      <div key={index} className={`hiddenLetter${el !== ' ' ? ' found' : ''}`}>
+        {el}
+      </div>
+    ))}
   </div>
 );
 

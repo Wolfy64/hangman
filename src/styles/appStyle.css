@@ -25,6 +25,7 @@ h1 {
   text-shadow: 2px 2px 3px #00000030;
   color: lightcyan;
   font-weight: 900;
+  margin-bottom: 1em;
 }
 
 button {
@@ -41,17 +42,9 @@ button {
   justify-items: center;
 }
 
-.hangman > .guesses {
-  padding: 15px;
-}
+/* === Keyboard === */
 
-.hangman > .guessWord {
-  /* font-size: 1.2em; */
-  letter-spacing: 5px;
-  padding: 15px;
-}
-
-.hangman > .keyboard {
+.keyboard {
   display: grid;
   grid-template-columns: repeat(auto-fill, 50px);
   grid-auto-rows: 50px;
@@ -59,9 +52,10 @@ button {
   gap: 10px;
   width: 80%;
   max-width: 800px;
+  margin: 1em 0;
 }
 
-.keyboard > .letter {
+.letter {
   display: flex;
   background-color: lightcyan;
   justify-content: center;
@@ -74,11 +68,13 @@ button {
   color: #000000b3;
 }
 
-.keyboard > .cover {
+.cover {
   opacity: 0.5;
   box-shadow: none;
   transform: scale(0.95);
 }
+
+/* === Guesses === */
 
 .guesses {
   width: 100%;
@@ -101,4 +97,37 @@ button {
   opacity: 1;
   transform: rotateY(0deg);
   transition: all ease-in-out 600ms;
+}
+
+/* === GuessWord === */
+
+.wordToGuess {
+  height: 50px;
+  margin: 1em;
+  display: flex;
+  justify-content: center;
+  font-size: 1.5em;
+  font-weight: 600;
+  color: #000000b3;
+  align-items: flex-end;
+}
+
+.hiddenLetter {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  margin: 0 0.1em;
+  width: 50px;
+  height: 10px;
+  background: lightcyan;
+  border-radius: 3px;
+  transition: all ease-in-out 300ms;
+  background-color: #ffda00;
+  box-shadow: 0px 2px 0px 1px #00000033;
+}
+
+.found {
+  align-items: center;
+  height: 50px;
+  transition: all ease-in-out 300ms;
 }
