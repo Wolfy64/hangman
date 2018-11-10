@@ -86,6 +86,7 @@ class App extends React.Component {
 
     return (
       <div className="hangman">
+        <h1> Welcome to the Hangman Game </h1>
         <GuessCount guesses={attempt} />
         <GuessWord hiddenWord={this.handleHiddenWord()} />
         {this.handleResult() || <Keyboard letters={letters} />}
