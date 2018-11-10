@@ -1,3 +1,22 @@
+html {
+  /* border-box box model allows us to add padding and border to our elements without increasing their size */
+  box-sizing: border-box;
+}
+
+body {
+  display: grid;
+  align-items: center;
+  height: 100vh;
+  background-image: linear-gradient(
+    to left top,
+    #e5bbc9,
+    #d8bfee,
+    #9ad0ff,
+    #09e2ff,
+    #12ebcc
+  );
+}
+
 h1 {
   text-align: center;
 }

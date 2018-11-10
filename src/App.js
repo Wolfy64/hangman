@@ -1,7 +1,7 @@
 import React from 'react';
 import propTypes from 'prop-types';
 import shuffle from 'lodash.shuffle';
-import './App.css';
+import './styles/appStyle.css';
 
 import GuessCount from './components/GuessCount/GuessCount';
 import GuessWord from './components/GuessWord/GuessWord';
@@ -68,9 +68,8 @@ class App extends React.Component {
 
   handleHiddenWord() {
     const { lettersSet, wordToGuess } = this.state;
-    return wordToGuess.replace(
-      /\w/g,
-      letter => (lettersSet.has(letter) ? letter : '_')
+    return wordToGuess.replace(/\w/g, letter =>
+      lettersSet.has(letter) ? letter : '_'
     );
   }
 
