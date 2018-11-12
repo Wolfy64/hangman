@@ -72,12 +72,14 @@ class App extends React.Component {
     );
   }
 
-  /* To replace word's letter by space 
-    if not match lettersSet state. 
-    Return String */
   handleHiddenWord() {
-    const { lettersSet, wordToGuess } = this.state;
+    const { attempt, lettersSet, wordToGuess } = this.state;
 
+    /* Show the wordToGuess if player has lost */
+    if (attempt === 0) return wordToGuess;
+
+    /* Replace word's letter by space 
+    if not match the lettersSet state. */
     return wordToGuess.replace(/\w/g, letter =>
       lettersSet.has(letter) ? letter : ' '
     );
