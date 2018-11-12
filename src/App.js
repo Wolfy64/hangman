@@ -29,6 +29,7 @@ class App extends React.Component {
 
   componentDidMount() {
     this.newGame();
+    this.handleKeyboard();
   }
 
   newGame = () => {
@@ -43,6 +44,14 @@ class App extends React.Component {
     return shuffle(WORD_LIST)
       .pop()
       .toUpperCase();
+  }
+
+  handleKeyboard() {
+    /* If the keyboard key is available, we use it */
+    document.addEventListener('keypress', e => {
+      const key = ALPHABET.find(letter => letter === e.key.toLocaleUpperCase());
+      return key ? this.handleClickLetter(key) : false;
+    });
   }
 
   /* Add Letter in "letterSet" state 
