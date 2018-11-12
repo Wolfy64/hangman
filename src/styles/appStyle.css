@@ -30,11 +30,23 @@ h1 {
 
 button {
   margin: 10px;
-  height: 30px;
+  padding: 0;
+  height: 100px;
   width: 100px;
-  border-radius: 3px;
+  font-size: 1.5em;
+  font-weight: 600;
+  color: #000000b3;
+  border: none;
+  border-radius: 50%;
+  outline: none;
   background: lightgreen;
-  border-color: lightgreen;
+  box-shadow: 2px 2px 2px 2px #00000045;
+  transition: all ease-in-out 100ms;
+}
+
+button:active {
+  transform: scale(0.95);
+  transition: all ease-in-out 100ms;
 }
 
 .hangman {
