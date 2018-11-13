@@ -1,6 +1,5 @@
 import React from 'react';
 import propTypes from 'prop-types';
-import shuffle from 'lodash.shuffle';
 import './styles/appStyle.css';
 
 import GuessCount from './components/GuessCount/GuessCount';
@@ -10,15 +9,6 @@ import Result from './components/Result/Result';
 
 /* Constant */
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-const WORD_LIST = [
-  'BONJOUR',
-  'SOLEIL',
-  'BONHEUR',
-  'SATURNE',
-  'TABLE',
-  'SUPER',
-  'OCEAN'
-];
 
 class App extends React.Component {
   state = {
@@ -28,23 +18,26 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    this.newGame();
+    this.handleNewGame();
     this.handleKeyboard();
   }
 
-  newGame = () => {
-    this.setState({
-      attempt: 7,
-      wordToGuess: this.randomWord(),
-      lettersSet: new Set()
-    });
+  handleNewGame = () => {
+    fetch('https://wordsapiv1.p.mashape.com/words/?random=true', {
+      headers: {
+        'X-Mashape-Key': 'EExNg56Ow4msh39YkNFTAmAOzqbGp1cW7SbjsnjCeve8uSvnCa',
+        'X-Mashape-Host': 'wordsapiv1.p.mashape.com'
+      }
+    })
+      .then(res => res.json())
+      .then(res => {
+        this.setState({
+          attempt: 7,
+          wordToGuess: res.word.toLocaleUpperCase(),
+          lettersSet: new Set()
+        });
+      });
   };
-
-  randomWord() {
-    return shuffle(WORD_LIST)
-      .pop()
-      .toUpperCase();
-  }
 
   handleKeyboard() {
     /* If the keyboard key is available, we use it */
@@ -58,9 +51,11 @@ class App extends React.Component {
     OR decrement "attempt" state */
   handleClickLetter(letter) {
     let { attempt, lettersSet, wordToGuess } = this.state;
+    const endGame = attempt === 0 || this.handleHiddenWord() === wordToGuess;
     const isNotClicked = !lettersSet.has(letter);
     const isNotMatchWord = !wordToGuess.split('').includes(letter);
 
+    if (endGame) return;
     if (isNotMatchWord && isNotClicked) attempt--;
 
     this.setState({
@@ -75,7 +70,7 @@ class App extends React.Component {
     const endGame = attempt === 0 || this.handleHiddenWord() === wordToGuess;
 
     return endGame ? (
-      <Result clicked={this.newGame} success={attempt !== 0} />
+      <Result clicked={this.handleNewGame} success={attempt !== 0} />
     ) : (
       false
     );
