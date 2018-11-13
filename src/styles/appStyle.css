@@ -93,7 +93,7 @@ button:active {
   justify-content: space-around;
   max-width: 800px;
   display: grid;
-  gap: 10px;
+  /* gap: 10px; */
   grid-template-columns: repeat(auto-fill, 90px);
 }
 
@@ -142,4 +142,18 @@ button:active {
   align-items: center;
   height: 50px;
   transition: all ease-in-out 300ms;
+}
+
+/* === Result === */
+
+.result {
+  text-align: center;
+}
+
+.result > p {
+  font-size: 3em;
+  text-shadow: 2px 2px 3px #00000030;
+  color: lightcyan;
+  font-weight: 900;
+  margin: 0.5em 0;
 }
