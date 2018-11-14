@@ -1,52 +1,61 @@
 import React from 'react';
 import propTypes from 'prop-types';
-import shuffle from 'lodash.shuffle';
-import './App.css';
+import './styles/appStyle.css';
 
 import GuessCount from './components/GuessCount/GuessCount';
 import GuessWord from './components/GuessWord/GuessWord';
-import Letter from './components/Letter/Letter';
 import Keyboard from './components/Keyboard/Keyboard';
 import Result from './components/Result/Result';
 
-// Constant
+const API_KEY = process.env.REACT_APP_API_KEY;
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-const WORD_LIST = [
-  'BONJOUR',
-  'SOLEIL',
-  'BONHEUR',
-  'SATURNE',
-  'TABLE',
-  'SUPER',
-  'OCEAN'
-];
 
 class App extends React.Component {
   state = {
-    attempt: 0,
+    attempt: 7,
     lettersSet: new Set(),
-    wordToGuess: ''
+    wordToGuess: 'STRING'
   };
 
   componentDidMount() {
-    this.newGame();
+    this.handleNewGame();
+    this.handleKeyboard();
   }
 
-  newGame = () => {
-    this.setState({
-      attempt: 7,
-      wordToGuess: this.randomWord(),
-      lettersSet: new Set()
-    });
+  handleNewGame = () => {
+    fetch('https://wordsapiv1.p.mashape.com/words/?random=true', {
+      headers: {
+        'X-Mashape-Key': API_KEY,
+        'X-Mashape-Host': 'wordsapiv1.p.mashape.com'
+      }
+    })
+      .then(res => res.json())
+      .then(res => {
+        this.setState({
+          attempt: 7,
+          wordToGuess: res.word.toUpperCase().replace(/\s/g, '-'),
+          lettersSet: new Set()
+        });
+      });
   };
 
-  randomWord() {
-    return shuffle(WORD_LIST)
-      .pop()
-      .toUpperCase();
+  handleKeyboard() {
+    document.addEventListener('keypress', e => {
+      /* Start a new game only if the game is over */
+      if (this.gameIsOver()) {
+        if (e.code === 'Enter' || e.code === 'Space') this.handleNewGame();
+      }
+      /* If the keyboard key is available, we use it */
+      const key = ALPHABET.find(letter => letter === e.code.slice(3));
+      return key ? this.handleClickLetter(key) : false;
+    });
   }
 
-  handleLetter(letter) {
+  /* Add Letter in "letterSet" state 
+    OR decrement "attempt" state */
+  handleClickLetter(letter) {
+    if (this.gameIsOver()) return;
+
     let { attempt, lettersSet, wordToGuess } = this.state;
     const isNotClicked = !lettersSet.has(letter);
     const isNotMatchWord = !wordToGuess.split('').includes(letter);
@@ -59,37 +68,45 @@ class App extends React.Component {
     });
   }
 
-  handleResult() {
-    const { attempt, wordToGuess } = this.state;
-    if (attempt === 0) return <Result clicked={this.newGame} />;
-    if (this.handleHiddenWord() === wordToGuess)
-      return <Result success clicked={this.newGame} />;
+  handleHiddenWord() {
+    const { attempt, lettersSet, wordToGuess } = this.state;
+
+    /* Show the wordToGuess if player has lost */
+    if (attempt === 0) return wordToGuess;
+
+    /* Replace word's letter by space 
+    if not match the lettersSet state. */
+    return wordToGuess.replace(/\w/g, letter =>
+      lettersSet.has(letter) ? letter : ' '
+    );
   }
 
-  handleHiddenWord() {
-    const { lettersSet, wordToGuess } = this.state;
-    return wordToGuess.replace(
-      /\w/g,
-      letter => (lettersSet.has(letter) ? letter : '_')
-    );
+  gameIsOver() {
+    const { attempt, wordToGuess } = this.state;
+    /* Return True if the game is over */
+    return attempt === 0 || this.handleHiddenWord() === wordToGuess;
   }
 
   render() {
     const { attempt, lettersSet } = this.state;
-    const letters = ALPHABET.map((letter, index) => (
-      <Letter
-        key={index}
-        letter={letter}
-        cover={lettersSet.has(letter)}
-        clicked={() => this.handleLetter(letter)}
+    const result = this.gameIsOver() && (
+      <Result clicked={this.handleNewGame} success={attempt !== 0} />
+    );
+
+    const keyboard = (
+      <Keyboard
+        letters={ALPHABET}
+        cover={letter => lettersSet.has(letter)}
+        clicked={letter => this.handleClickLetter(letter)}
       />
-    ));
+    );
 
     return (
-      <div className="hangman">
+      <div className='hangman'>
+        <h1> Welcome to the Hangman Game </h1>
         <GuessCount guesses={attempt} />
         <GuessWord hiddenWord={this.handleHiddenWord()} />
-        {this.handleResult() || <Keyboard letters={letters} />}
+        {result || keyboard}
       </div>
     );
   }
@@ -97,7 +114,7 @@ class App extends React.Component {
 
 export default App;
 
-// PropTypes
+/* PropTypes */
 GuessCount.propTypes = {
   guesses: propTypes.number.isRequired
 };
@@ -106,10 +123,8 @@ GuessWord.propTypes = {
   hiddenWord: propTypes.string.isRequired
 };
 
-Letter.propTypes = {
-  cover: propTypes.bool.isRequired
-};
-
 Keyboard.propTypes = {
-  letters: propTypes.array.isRequired
+  letters: propTypes.array.isRequired,
+  cover: propTypes.func.isRequired,
+  clicked: propTypes.func.isRequired
 };
