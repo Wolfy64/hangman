@@ -7,14 +7,14 @@ import GuessWord from './components/GuessWord/GuessWord';
 import Keyboard from './components/Keyboard/Keyboard';
 import Result from './components/Result/Result';
 
-/* Constant */
+const API_KEY = process.env.REACT_APP_API_KEY;
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 class App extends React.Component {
   state = {
-    attempt: 0,
+    attempt: 7,
     lettersSet: new Set(),
-    wordToGuess: ''
+    wordToGuess: 'STRING'
   };
 
   componentDidMount() {
@@ -25,7 +25,7 @@ class App extends React.Component {
   handleNewGame = () => {
     fetch('https://wordsapiv1.p.mashape.com/words/?random=true', {
       headers: {
-        'X-Mashape-Key': 'EExNg56Ow4msh39YkNFTAmAOzqbGp1cW7SbjsnjCeve8uSvnCa',
+        'X-Mashape-Key': API_KEY,
         'X-Mashape-Host': 'wordsapiv1.p.mashape.com'
       }
     })
@@ -33,16 +33,20 @@ class App extends React.Component {
       .then(res => {
         this.setState({
           attempt: 7,
-          wordToGuess: res.word.toLocaleUpperCase(),
+          wordToGuess: res.word.toUpperCase().replace(/\s/g, '-'),
           lettersSet: new Set()
         });
       });
   };
 
   handleKeyboard() {
-    /* If the keyboard key is available, we use it */
     document.addEventListener('keypress', e => {
-      const key = ALPHABET.find(letter => letter === e.key.toLocaleUpperCase());
+      /* Start a new game only if the game is over */
+      if (this.gameIsOver()) {
+        if (e.code === 'Enter' || e.code === 'Space') this.handleNewGame();
+      }
+      /* If the keyboard key is available, we use it */
+      const key = ALPHABET.find(letter => letter === e.code.slice(3));
       return key ? this.handleClickLetter(key) : false;
     });
   }
@@ -50,30 +54,18 @@ class App extends React.Component {
   /* Add Letter in "letterSet" state 
     OR decrement "attempt" state */
   handleClickLetter(letter) {
+    if (this.gameIsOver()) return;
+
     let { attempt, lettersSet, wordToGuess } = this.state;
-    const endGame = attempt === 0 || this.handleHiddenWord() === wordToGuess;
     const isNotClicked = !lettersSet.has(letter);
     const isNotMatchWord = !wordToGuess.split('').includes(letter);
 
-    if (endGame) return;
     if (isNotMatchWord && isNotClicked) attempt--;
 
     this.setState({
       lettersSet: lettersSet.add(letter),
       attempt
     });
-  }
-
-  /* If True return <Result> */
-  handleResult() {
-    const { attempt, wordToGuess } = this.state;
-    const endGame = attempt === 0 || this.handleHiddenWord() === wordToGuess;
-
-    return endGame ? (
-      <Result clicked={this.handleNewGame} success={attempt !== 0} />
-    ) : (
-      false
-    );
   }
 
   handleHiddenWord() {
@@ -89,21 +81,32 @@ class App extends React.Component {
     );
   }
 
+  gameIsOver() {
+    const { attempt, wordToGuess } = this.state;
+    /* Return True if the game is over */
+    return attempt === 0 || this.handleHiddenWord() === wordToGuess;
+  }
+
   render() {
     const { attempt, lettersSet } = this.state;
+    const result = this.gameIsOver() && (
+      <Result clicked={this.handleNewGame} success={attempt !== 0} />
+    );
+
+    const keyboard = (
+      <Keyboard
+        letters={ALPHABET}
+        cover={letter => lettersSet.has(letter)}
+        clicked={letter => this.handleClickLetter(letter)}
+      />
+    );
 
     return (
       <div className='hangman'>
         <h1> Welcome to the Hangman Game </h1>
         <GuessCount guesses={attempt} />
         <GuessWord hiddenWord={this.handleHiddenWord()} />
-        {this.handleResult() || (
-          <Keyboard
-            letters={ALPHABET}
-            cover={letter => lettersSet.has(letter)}
-            clicked={letter => this.handleClickLetter(letter)}
-          />
-        )}
+        {result || keyboard}
       </div>
     );
   }

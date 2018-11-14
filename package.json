@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "dotenv": "^6.1.0",
     "lodash.shuffle": "^4.2.0",
     "merge": "^1.2.1",
     "prop-types": "^15.6.2",
