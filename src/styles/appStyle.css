@@ -54,6 +54,13 @@ button:active {
   justify-items: center;
 }
 
+.loading {
+  margin: 1em;
+  font-size: 4vmax;
+  color: lightcyan;
+  font-weight: 900;
+}
+
 /* === Keyboard === */
 .keyboard {
   display: grid;
