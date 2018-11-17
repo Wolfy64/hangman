@@ -154,14 +154,21 @@ button:active {
 /* === Result === */
 .result {
   text-align: center;
-}
-
-.result > p {
-  font-size: 5vmax;
+  text-align: center;
   text-shadow: 2px 2px 3px #00000030;
   color: lightcyan;
   font-weight: 900;
   margin: 0.5em 0;
+}
+
+.success {
+  font-size: 5vmax;
+}
+
+.playInfo {
+  font-size: 1em;
+  text-shadow: none;
+  font-weight: 100;
 }
 
 @media screen and (max-width: 500px) {

@@ -2,6 +2,8 @@ export const API_KEY = process.env.REACT_APP_API_KEY;
 
 export const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
+export const SMILEYS = ['😵', '😱', '😰', '😓', '😦', '🙄', '🤔', '🙂'];
+
 export const WORDS = [
   'ong',
   'vivacious',
