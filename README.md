@@ -1,6 +1,7 @@
 # The Hangman Gamne
 
 The hangman game is a word guessing game.
+
 This is a quick project made for fun 🙂 and to play with React.
 
 ## Getting Started
@@ -17,7 +18,7 @@ Visit localhost:3000.
 
 ### Prerequisites
 
-Add your [[WordsAPI](https://www.wordsapi.com/)] API KEY in dotEnv
+Add your [WordsAPI](https://www.wordsapi.com/) API KEY in dotEnv
 
 ```
 REACT_APP_API_KEY="Your API KEY"
@@ -27,11 +28,6 @@ REACT_APP_API_KEY="Your API KEY"
 
 * [React](https://reactjs.org/) - The boilerplate
 * [WordsAPI](https://www.wordsapi.com/) - The Words API
-
-
-## Authors
-
-* **David De Wulf**
 
 
 ## License
