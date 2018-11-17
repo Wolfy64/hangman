@@ -1,6 +1,5 @@
 import React from 'react';
-
-const SMILEYS = ['😵', '😱', '😰', '😓', '😦', '🙄', '🤔', '🙂'];
+import { SMILEYS } from '../../data/data';
 
 const GuessCount = ({ guesses }) => (
   <div className='guesses'>

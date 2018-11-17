@@ -6,15 +6,15 @@ import GuessCount from './components/GuessCount/GuessCount';
 import GuessWord from './components/GuessWord/GuessWord';
 import Keyboard from './components/Keyboard/Keyboard';
 import Result from './components/Result/Result';
-
-const API_KEY = process.env.REACT_APP_API_KEY;
-const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+import Loading from './components/Loading/loading';
+import { API_KEY, ALPHABET } from './data/data';
 
 class App extends React.Component {
   state = {
     attempt: 7,
     lettersSet: new Set(),
-    wordToGuess: 'STRING'
+    wordToGuess: 'STRING',
+    isLoading: false
   };
 
   componentDidMount() {
@@ -23,18 +23,23 @@ class App extends React.Component {
   }
 
   handleNewGame = () => {
-    fetch('https://wordsapiv1.p.mashape.com/words/?random=true', {
-      headers: {
-        'X-Mashape-Key': API_KEY,
-        'X-Mashape-Host': 'wordsapiv1.p.mashape.com'
+    this.setState({ isLoading: true });
+    fetch(
+      'https://wordsapiv1.p.mashape.com/words/?lettersMin=4&lettersMax=7&random=true',
+      {
+        headers: {
+          'X-Mashape-Key': API_KEY,
+          'X-Mashape-Host': 'wordsapiv1.p.mashape.com'
+        }
       }
-    })
+    )
       .then(res => res.json())
       .then(res => {
         this.setState({
           attempt: 7,
           wordToGuess: res.word.toUpperCase().replace(/\s/g, '-'),
-          lettersSet: new Set()
+          lettersSet: new Set(),
+          isLoading: false
         });
       });
   };
@@ -88,10 +93,13 @@ class App extends React.Component {
   }
 
   render() {
-    const { attempt, lettersSet } = this.state;
+    const { attempt, lettersSet, isLoading } = this.state;
     const result = this.gameIsOver() && (
       <Result clicked={this.handleNewGame} success={attempt !== 0} />
     );
+
+    const loading = isLoading && <Loading />;
+    const guessWord = <GuessWord hiddenWord={this.handleHiddenWord()} />;
 
     const keyboard = (
       <Keyboard
@@ -105,7 +113,7 @@ class App extends React.Component {
       <div className='hangman'>
         <h1> Welcome to the Hangman Game </h1>
         <GuessCount guesses={attempt} />
-        <GuessWord hiddenWord={this.handleHiddenWord()} />
+        {loading || guessWord}
         {result || keyboard}
       </div>
     );
