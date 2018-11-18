@@ -1,6 +1,6 @@
 {
-  "short_name": "hangman",
-  "name": "the-hangman-game",
+  "short_name": "Hangman",
+  "name": "The Hangman Game",
   "default_locale": "en",
   "description": "A word-guessing game",
   "icons": [
@@ -15,7 +15,7 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": "/index.html",
+  "start_url": "/.index.html",
   "background_color": "#00e0ff",
   "orientation": "landscape",
   "display": "standalone",
