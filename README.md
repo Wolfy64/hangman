@@ -1,4 +1,4 @@
-# The Hangman Gamne
+# The Hangman Game
 
 The hangman game is a word guessing game.
 
